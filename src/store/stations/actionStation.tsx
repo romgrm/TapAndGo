@@ -27,14 +27,12 @@ const returnApiError = (error: StationAction) => {
 };
 
 export const callApiStation = () => {
-  return (dispatch: DispatchType) => {
+  return async (dispatch: DispatchType) => {
     dispatch(returnApiLoading());
-    axios
+    await axios
       .get<Station>(Environments.development.STATIONS, {
         params: {
-          timeout: 1000, 
           apiKey: Environments.development.API_KEY,
-          _limit: 10
         },
       })
       .then((res) => {
