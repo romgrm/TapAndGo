@@ -6,7 +6,14 @@ import { callApiStation } from "../store/stations/actionStation";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { Environments } from "../config/environment";
 import { Logger } from "@react-native-mapbox-gl/maps";
-import { Button, Modal, Text, Portal, Provider, Card } from "react-native-paper";
+import {
+  Button,
+  Modal,
+  Text,
+  Portal,
+  Provider,
+  Card,
+} from "react-native-paper";
 
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
@@ -23,7 +30,11 @@ Logger.setLogCallback((log) => {
   }
   return false;
 });
-export default function stationsContainer() {
+
+interface Props {
+  navigation: any;
+}
+export default function stationsContainer(props: Props) {
   const [visible, setVisible] = useState(false);
   const stations = useSelector((state: RootState) => state.stations.stations);
   const dispatch = useDispatch();
@@ -46,6 +57,17 @@ export default function stationsContainer() {
   const test = () => {
     return "hello";
   };
+
+  const AnnotationContent = ({ title }) => (
+    <View style={styles.touchableContainer}>
+      <Text>{title}</Text>
+      <TouchableOpacity style={styles.touchable}>
+        <Button onPress={() => props.navigation.navigate("Infos")}>
+          Hello
+        </Button>
+      </TouchableOpacity>
+    </View>
+  );
   return (
     <>
       <View style={styles.page}>
@@ -70,16 +92,23 @@ export default function stationsContainer() {
                     onSelected={displayInfos}
                   >
                     {/* <AnnotationContent title={"this is a marker view"} /> */}
-                  <MapboxGL.Callout title={[val.name,val.address, val.status].toString()} key={val.address} accessible>
-                     <Card>
-                         <Card.Title title={val.name} />
-                             <Card.Content>
-                                 <Text>I'm here</Text>
-                             </Card.Content>
-                        <Button icon="camera" mode="contained" >Press me</Button>
-                     </Card>
-                  </MapboxGL.Callout>
+
+                    <MapboxGL.Callout>
+                      <Card key={val.name}>
+                        <Card.Title title={val.name} />
+                        <Card.Content>
+                          <Button onPress={() => props.navigation.navigate("Infos")}>Press</Button>
+                          <Text>I'm here</Text>
+                        </Card.Content>
+                      </Card>
+                    </MapboxGL.Callout>
                   </MapboxGL.PointAnnotation>
+                  {/*<MapboxGL.MarkerView
+                    coordinate={[val.position.longitude, val.position.latitude]}
+                    id={val.address}
+                  >
+                    <AnnotationContent title={val.name} />
+                  </MapboxGL.MarkerView>*/}
                 </>
               ))}
             </MapboxGL.MapView>
