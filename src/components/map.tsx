@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { useSelector, useDispatch, DefaultRootState } from "react-redux";
-import { RootState } from "../store/combineReducers";
-import { callApiStation } from "../store/stations/actionStation";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { Environments } from "../config/environment";
 import { Logger } from "@react-native-mapbox-gl/maps";
@@ -37,58 +34,68 @@ interface Props {
   station: Station[];
 }
 export default function Map(props: Props) {
+  const [displayMap, setDisplayMap] = useState(false);
+  const [marseilleState, setMarseilleState] = useState<Station[]>([]
+  );
 
-  const [marseilleState, setMarseilleState] = useState<Station[]>([]); 
-
-  useEffect(() => {
-    setMarseilleState(props.station)
+useEffect(() => {
+  async function display  () {
     
-  }, [])
-
-  const onlyMarseille = () => {
-    const stationFiltree = props.station.filter((val) => val.name === "9087-MAZARGUES");
-    setMarseilleState(stationFiltree);
-  };
-
-  const reinitFilters = () => {
-      setMarseilleState(props.station)
+    setMarseilleState(await props.station.slice(0,10))
+    setDisplayMap(true)
   }
+  display()
+}, [props.station])
+
+  const modif = () => {
+    const filtrage = marseilleState.filter(val => val.name === "9087-MAZARGUES")
+    setMarseilleState(filtrage)
+  }
+
+  async function reinit() {
+    setMarseilleState(await props.station.slice(0,10))
+  }
+
   const coordinates = [2.213749, 46.227638];
   return (
     <>
       <View style={styles.page}>
         <View style={styles.container}>
-          <View style={styles.container}>
+            {displayMap ? 
+            
             <MapboxGL.MapView
-              style={styles.map}
-              styleURL={MapboxGL.StyleURL.Outdoors}
+            
+            style={styles.map}
+            styleURL={MapboxGL.StyleURL.Outdoors}
             >
-              <MapboxGL.Camera
-                zoomLevel={3}
-                centerCoordinate={coordinates}
-                animationMode={"flyTo"}
+            <MapboxGL.Camera
+              zoomLevel={3}
+              centerCoordinate={coordinates}
+              animationMode={"flyTo"}
               />
 
-              {marseilleState.map((val) => (
+            {marseilleState.map((val) => (
                 <>
-                  <MapboxGL.MarkerView
-                    coordinate={[val.position.longitude, val.position.latitude]}
-                    id={val.address}
+                <MapboxGL.MarkerView
+                  coordinate={[val.position.longitude, val.position.latitude]}
+                  id={val.address}
                   >
-                    {/* <AnnotationContent title={val.name} /> */}
-                    <StationCallout
-                      title={val.name}
-                      navigation={props.navigation}
+                  <StationCallout
+                    title={val.name}
+                    navigation={props.navigation}
                     />
-                  </MapboxGL.MarkerView>
-                </>
-              ))}
-            </MapboxGL.MapView>
-          </View>
+                </MapboxGL.MarkerView>
+              </>
+            ))}
+          </MapboxGL.MapView>
+    
+    : null}
         </View>
-        <Button onPress={() => onlyMarseille()}>Filter Marseille</Button>
-        <Button onPress={() => reinitFilters()}>Reinit Filter</Button>
-      </View>
+        </View>
+        <Button onPress={() => modif()}>
+        Voir les vélos dispo en france
+      </Button>
+      <Button onPress={() => reinit()}>Reinit Filter</Button>
     </>
   );
 }

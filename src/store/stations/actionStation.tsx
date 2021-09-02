@@ -1,5 +1,5 @@
 import * as typeStation from "./typeStation";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Environments } from "../../config/environment";
 /**
  * Differents actions
