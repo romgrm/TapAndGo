@@ -14,7 +14,7 @@ import {
   Provider,
   Card,
 } from "react-native-paper";
-import StationCallout from './stationCallout'
+import StationCallout from "./stationCallout";
 
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
@@ -34,10 +34,25 @@ Logger.setLogCallback((log) => {
 
 interface Props {
   navigation: any;
-  station: Station[]
+  station: Station[];
 }
 export default function Map(props: Props) {
-  
+
+  const [marseilleState, setMarseilleState] = useState<Station[]>([]); 
+
+  useEffect(() => {
+    setMarseilleState(props.station)
+    
+  }, [])
+
+  const onlyMarseille = () => {
+    const stationFiltree = props.station.filter((val) => val.name === "9087-MAZARGUES");
+    setMarseilleState(stationFiltree);
+  };
+
+  const reinitFilters = () => {
+      setMarseilleState(props.station)
+  }
   const coordinates = [2.213749, 46.227638];
   return (
     <>
@@ -54,20 +69,25 @@ export default function Map(props: Props) {
                 animationMode={"flyTo"}
               />
 
-              {props.station.map((val) => (
+              {marseilleState.map((val) => (
                 <>
                   <MapboxGL.MarkerView
                     coordinate={[val.position.longitude, val.position.latitude]}
                     id={val.address}
                   >
                     {/* <AnnotationContent title={val.name} /> */}
-                    <StationCallout title={val.name} navigation={props.navigation}/>
+                    <StationCallout
+                      title={val.name}
+                      navigation={props.navigation}
+                    />
                   </MapboxGL.MarkerView>
                 </>
               ))}
             </MapboxGL.MapView>
           </View>
         </View>
+        <Button onPress={() => onlyMarseille()}>Filter Marseille</Button>
+        <Button onPress={() => reinitFilters()}>Reinit Filter</Button>
       </View>
     </>
   );

@@ -37,10 +37,12 @@ interface Props {
   navigation: any;
 }
 export default function stationsContainer(props: Props) {
-  const [visible, setVisible] = useState(false);
+  
   const stations = useSelector((state: RootState) => state.stations.stations);
   const dispatch = useDispatch();
   const coordinates = [2.213749, 46.227638];
+
+  
 
   /**
    * Only 10 stations selected for the demo (performs reasons)
@@ -55,6 +57,7 @@ export default function stationsContainer(props: Props) {
   return (
     <>
     <Map navigation={props.navigation} station={reduceStations}/>
+    
       {/* <View style={styles.page}>
         <View style={styles.container}>
           <View style={styles.container}>
