@@ -1,9 +1,15 @@
 import React from 'react'
+import { FC } from 'react'
 import { Text } from 'react-native'
 
+interface Props {
+    route: any
+}
 
-export function InformationsScreen() {
+export const InformationsScreen: FC<Props> = ({ route}) => {
+    
+    const { params } = route; 
     return (
-        <Text>Informations Screen</Text>
+        <Text>Informations Screen {params.titleStation} hello</Text>
     )
 }
