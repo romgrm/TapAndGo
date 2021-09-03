@@ -10,6 +10,7 @@ import {
   Portal,
   Provider,
   Card,
+  TextInput
 } from "react-native-paper";
 import StationCallout from "./stationCallout";
 
@@ -34,26 +35,49 @@ interface Props {
   station: Station[];
 }
 export default function Map(props: Props) {
-  const [displayMap, setDisplayMap] = useState(false);
-  const [marseilleState, setMarseilleState] = useState<Station[]>([]
-  );
+  const [stationState, setStationState] = useState<Station[]>([]);
+  const [displayMap, setDisplayMap] = useState<boolean>(false);
+  const [displayFilter, setDisplayFilter] = useState<boolean>(false);
+  const [nameStation, setNameStation] = useState<string>(""); 
 
-useEffect(() => {
-  async function display  () {
-    
-    setMarseilleState(await props.station.slice(0,10))
-    setDisplayMap(true)
-  }
-  display()
-}, [props.station])
+  useEffect(() => {
+    async function display() {
+      setStationState(await props.station.slice(0, 10));
+      setDisplayMap(true);
+    }
+    display();
+  }, [props.station]);
 
-  const modif = () => {
-    const filtrage = marseilleState.filter(val => val.name === "9087-MAZARGUES")
-    setMarseilleState(filtrage)
-  }
+  const activeFilter = () => {
+    setDisplayFilter(true);
+  };
 
+  async function filterByName(input : string)  {
+    if(input.length > 0){
+      const valueInput = input.toLowerCase()
+      setNameStation(valueInput)
+      const byName = stationState.filter((val) => val.contractName.startsWith(nameStation));
+      setStationState(byName);
+    }else{
+      setNameStation('')
+      setStationState(await props.station.slice(0,10))
+    }
+  };
+
+  const filterByStatus = () => {
+    const byStatus = stationState.filter((val) => val.status === "OPEN");
+    setStationState(byStatus);
+  };
+
+  const filterByDispo = () => {
+    const byDispo = stationState.filter(
+      (val) => val.mainStands.availabilities.bikes < 0
+    );
+    setStationState(byDispo);
+  };
   async function reinit() {
-    setMarseilleState(await props.station.slice(0,10))
+    setStationState(await props.station.slice(0, 10));
+    setNameStation("")
   }
 
   const coordinates = [2.213749, 46.227638];
@@ -61,41 +85,59 @@ useEffect(() => {
     <>
       <View style={styles.page}>
         <View style={styles.container}>
-            {displayMap ? 
-            
+          {displayMap ? (
             <MapboxGL.MapView
-            
             style={styles.map}
             styleURL={MapboxGL.StyleURL.Outdoors}
             >
-            <MapboxGL.Camera
-              zoomLevel={3}
-              centerCoordinate={coordinates}
-              animationMode={"flyTo"}
-              />
+              <MapboxGL.Camera
+                zoomLevel={3}
+                centerCoordinate={coordinates}
+                animationMode={"flyTo"}
+                />
 
-            {marseilleState.map((val) => (
+              {stationState.map((val) => (
                 <>
-                <MapboxGL.MarkerView
-                  coordinate={[val.position.longitude, val.position.latitude]}
-                  id={val.address}
-                  >
-                  <StationCallout
-                    title={val.name}
-                    navigation={props.navigation}
-                    />
-                </MapboxGL.MarkerView>
-              </>
-            ))}
-          </MapboxGL.MapView>
-    
-    : null}
+                  <MapboxGL.MarkerView
+                    coordinate={[val.position.longitude, val.position.latitude]}
+                    id={val.address}
+                    >
+                    <StationCallout
+                      title={val.contractName}
+                      navigation={props.navigation}
+                      />
+                  </MapboxGL.MarkerView>
+                </>
+              ))}
+            </MapboxGL.MapView>
+          ) : null}
         </View>
-        </View>
-        <Button onPress={() => modif()}>
-        Voir les vélos dispo en france
-      </Button>
-      <Button onPress={() => reinit()}>Reinit Filter</Button>
+      </View>
+      <Button onPress={() => activeFilter()}>Filtrer</Button>
+      {displayFilter ? (
+        <Card>
+          <Card.Title title="Filtrer les résultats" />
+          <Card.Content>
+            <TextInput
+              label="filterName"
+              mode="outlined"
+              placeholder="Entrer un nom de ville"
+              onChangeText={async (input: string) => await filterByName(input)}
+              />
+              <Text> {nameStation}</Text>
+            {/* <Button onPress={() => filterByName()}>
+              Rechercher une station par son nom
+            </Button> */}
+            <Button onPress={() => filterByStatus()}>
+              Voir uniquement les stations ouvertes
+            </Button>
+            <Button onPress={() => filterByDispo()}>
+              Voir uniquement les stations avec vélos disponibles
+            </Button>
+            <Button onPress={() => reinit()}>Reinit Filter</Button>
+          </Card.Content>
+        </Card>
+      ) : null}
     </>
   );
 }
@@ -114,7 +156,7 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
-    overflow:"hidden"
+    overflow: "hidden",
   },
   touchableContainer: {
     borderColor: "black",

@@ -1,6 +1,6 @@
  interface Station {
   id: number;
-  name: string;
+  contractName: string;
   address: string;
   position: {
     latitude: number;
