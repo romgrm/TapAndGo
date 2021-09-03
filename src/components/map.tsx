@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    overflow:"hidden"
   },
   touchableContainer: {
     borderColor: "black",
