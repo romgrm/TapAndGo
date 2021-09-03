@@ -1,15 +1,67 @@
-import React from 'react'
-import { FC } from 'react'
-import { Text } from 'react-native'
+import React, { FC } from "react";
+import { Text, StyleSheet, Image } from "react-native";
+import { Card, Surface } from "react-native-paper";
+import { globalStyles } from "../styles/globalStyles";
 
 interface Props {
-    route: any
+  route: any;
 }
 
-export const InformationsScreen: FC<Props> = ({ route}) => {
-    
-    const { params } = route; 
-    return (
-        <Text>Informations Screen {params.titleStation} hello</Text>
-    )
+
+export default function InformationsScreen({route}: Props) {
+
+    const { sendInfosStation } = route.params; 
+    const infosStation: Station = sendInfosStation;
+  return (
+    <Card>
+      <Surface style={styles.surfaceCover}>
+        <Image
+          source={require("../../assets/bike2.png")}
+          style={styles.image}
+        />
+        {/* <Card.Title title={params.titleStation} titleStyle={globalStyles.title}/> */}
+      </Surface>
+
+      <Text>Informations Screen {infosStation.contractName} hello</Text>
+      <Text>Informations Screen {infosStation.address} hello</Text>
+      <Text>Informations Screen {infosStation.mainStands.availabilities.electricalBikes} hello</Text>
+    </Card>
+  );
 }
+const styles = StyleSheet.create({
+  touchableContainer: {
+    width: 60,
+    zIndex: 1,
+  },
+  touchableLogo: {
+    backgroundColor: "#7158e2",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logo: {
+    justifyContent: "center",
+    color: "white",
+  },
+  touchableText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  surfaceCover: {
+    width: "100%",
+    height: 200,
+    // margin: 50,
+    elevation: 4,
+    backgroundColor: "red",
+    // overflow:"hidden"
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    resizeMode: "cover",
+    //   marginBottom: 4000
+    // height: 400,
+  },
+});

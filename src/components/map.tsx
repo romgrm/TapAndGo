@@ -103,6 +103,7 @@ export default function Map(props: Props) {
                     id={val.address}
                     >
                     <StationCallout
+                      station={val}
                       title={val.contractName}
                       navigation={props.navigation}
                       />
@@ -122,6 +123,7 @@ export default function Map(props: Props) {
               label="filterName"
               mode="outlined"
               placeholder="Entrer un nom de ville"
+              value={nameStation}
               onChangeText={async (input: string) => await filterByName(input)}
               />
               <Text> {nameStation}</Text>

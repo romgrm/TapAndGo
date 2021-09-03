@@ -1,4 +1,4 @@
- interface Station {
+interface Station {
   id: number;
   contractName: string;
   address: string;
@@ -16,9 +16,9 @@
       electricalBikes: number;
       electricalInternalBatteryBikes: number;
       electricalRemovableBatteryBikes: number;
-    },
-    capacity: number; 
-  },
+    };
+    capacity: number;
+  };
   mainStands: {
     availabilities: {
       bikes: number;
@@ -27,21 +27,20 @@
       electricalBikes: number;
       electricalInternalBatteryBikes: number;
       electricalRemovableBatteryBikes: number;
-    },
-    capacity: number; 
-  }
+    };
+    capacity: number;
+  };
 }
 
- type StationState = {
-    isLoading: boolean; 
-    stations: Station[];
-    error: string; 
-}
+type StationState = {
+  isLoading: boolean;
+  stations: Station[];
+  error: string;
+};
 
- type StationAction = {
-    type: string;
-    payload?: Station | Error
-}
+type StationAction = {
+  type: string;
+  payload?: Station | Error;
+};
 
- type DispatchType = (args: StationAction) => StationAction
-
+type DispatchType = (args: StationAction) => StationAction;
