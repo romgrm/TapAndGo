@@ -3,9 +3,9 @@ import { StyleSheet, Platform } from "react-native";
 export const globalStyles = StyleSheet.create({
   titleApp: {
     fontFamily: "Bold",
-    fontSize: 30,
+    fontSize: 40,
     alignSelf:"center",
-    color: "#7158e2",
+    color: "white",
     margin: 20
   },
   title: {
@@ -16,15 +16,15 @@ export const globalStyles = StyleSheet.create({
     fontFamily: "Medium",
     fontSize: 15,
     textAlign: "center",
-    color: "#778ca3"
+    color: "white"
   },
   text: {
     fontSize: 20,
   },
   droidSafeArea: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? 40 : 0,
+    backgroundColor: "#778ca3",
+    // paddingTop: Platform.OS === 'android' ? 40 : 0
   },
 });
 

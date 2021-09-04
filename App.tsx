@@ -5,6 +5,8 @@ import store from "./src/store/store";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import RootNavigation from "./src/navigation/rootNavigation";
+import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
+import { globalStyles } from "./src/styles/globalStyles";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -18,10 +20,17 @@ export default function App() {
   } else {
     return (
       <Provider store={store}>
-        <NavigationContainer>
+        <SafeAreaView style={globalStyles.droidSafeArea}>
+          <StatusBar translucent backgroundColor="#7158e2" barStyle="dark-content"/>
+          <NavigationContainer>
             <RootNavigation />
-        </NavigationContainer>
+          </NavigationContainer>
+        </SafeAreaView>
       </Provider>
     );
   }
 }
+
+const styles =StyleSheet.create({
+
+})

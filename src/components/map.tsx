@@ -3,12 +3,22 @@ import { View, StyleSheet } from "react-native";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { Environments } from "../config/environment";
 import { Logger } from "@react-native-mapbox-gl/maps";
-import { Button, Text, Card, TextInput } from "react-native-paper";
+import {
+  Button,
+  Text,
+  Card,
+  TextInput,
+  FAB,
+  Portal,
+  Provider,
+} from "react-native-paper";
 import StationCallout from "./stationCallout";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Entypo } from "@expo/vector-icons";
 import { globalColor } from "../styles/globalStyles";
+import { Ionicons } from "@expo/vector-icons";
+import { color } from "react-native-reanimated";
 
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
@@ -48,7 +58,7 @@ export default function Map(props: MapComponentProps) {
   }, [props.station]);
 
   const activeFilter = () => {
-    setDisplayFilter(true);
+    setDisplayFilter(!displayFilter);
   };
   let isTrue: boolean;
   async function filterByName(input: string) {
@@ -57,7 +67,9 @@ export default function Map(props: MapComponentProps) {
       val.contractName.startsWith(input.toLowerCase())
     );
     if (isTrue) {
-      const byName = stationState.filter((val) => (val.contractName.startsWith(nameStation.toLowerCase())));
+      const byName = stationState.filter((val) =>
+        val.contractName.startsWith(nameStation.toLowerCase())
+      );
       setStationState(byName);
     } else {
       setDisplayError(true);
@@ -65,23 +77,6 @@ export default function Map(props: MapComponentProps) {
       setStationState(await props.station.slice(0, 10));
     }
   }
-  // async function filterByName(input: string) {
-  //   if (input.length > 0) {
-  //     setNameStation(input);
-  //     const byName = stationState.filter((val) =>
-  //       val.contractName.startsWith(nameStation.toLowerCase())
-  //     );
-  //     setStationState(byName);
-  //   } else {
-  //     setNameStation("");
-  //     setStationState(await props.station.slice(0, 10));
-  //   }
-  // }
-
-  // Je récup l'input
-  // je regarde si il correspond à un element de mon stationState avec startWith
-  // si oui -> je filtre/map et je remplace par l'input
-  // si non je déclenche l'error
 
   const filterByStatus = () => {
     const byStatus = stationState.filter((val) => val.status === "OPEN");
@@ -97,81 +92,125 @@ export default function Map(props: MapComponentProps) {
   async function reinit() {
     setStationState(await props.station.slice(0, 10));
     setNameStation("");
-    setDisplayError(false); 
+    setDisplayError(false);
   }
 
   const coordinates = [2.213749, 46.227638];
   return (
     <>
-      <Card style={styles.containerGlobal}>
-        <Card.Content style={styles.containerInput}>
-          <TextInput
-            label="Entrer un nom de ville pour trouver une station"
-            mode="outlined"
-            value={nameStation}
-            onChangeText={async (input: string) => await filterByName(input)}
-            right={
-              <TextInput.Icon
-                name={() => (
-                  <Entypo
-                    name="circle-with-cross"
-                    size={24}
-                    style={globalColor.violet}
-                  />
-                )}
-                onPress={() => reinit()}
-              />
-            }
-          />
-          {displayError ? <Text> {nothing}</Text> : null}
-        </Card.Content>
-        <Card.Content style={styles.containerMap}>
-          {displayMap ? (
-            <MapboxGL.MapView
-              style={styles.map}
-              styleURL={MapboxGL.StyleURL.Outdoors}
-            >
-              <MapboxGL.Camera
-                zoomLevel={3}
-                centerCoordinate={coordinates}
-                animationMode={"flyTo"}
-              />
-
-              {stationState.map((val) => (
-                <>
-                  <MapboxGL.MarkerView
-                    coordinate={[val.position.longitude, val.position.latitude]}
-                    id={val.address}
-                  >
-                    <StationCallout
-                      station={val}
-                      title={val.contractName}
-                      navigation={props.navigation}
-                      route={props.route}
+      <Provider>
+        <Card style={styles.containerGlobal}>
+          <Card.Content style={styles.containerInput}>
+            <TextInput
+              label="Entrer un nom de ville pour trouver une station"
+              mode="outlined"
+              outlineColor="#778ca3"
+              selectionColor="black"
+              placeholderTextColor="#778ca3"
+              value={nameStation}
+              onChangeText={async (input: string) => await filterByName(input)}
+              style={styles.input}
+              right={
+                <TextInput.Icon
+                  name={() => (
+                    <Entypo
+                      name="circle-with-cross"
+                      size={28}
+                      style={globalColor.violet}
                     />
-                  </MapboxGL.MarkerView>
-                </>
-              ))}
-            </MapboxGL.MapView>
-          ) : null}
-        </Card.Content>
-        {/* <Button onPress={() => activeFilter()}>Filtrer</Button>
-      {displayFilter ? (
-        <Card>
-          <Card.Title title="Filtrer les résultats" />
-          <Card.Content>
-            <Text> {nameStation}</Text>
-            <Button onPress={() => filterByStatus()}>
-              Voir uniquement les stations ouvertes
-            </Button>
-            <Button onPress={() => filterByDispo()}>
-              Voir uniquement les stations avec vélos disponibles
-            </Button>
-            <Button onPress={() => reinit()}>Reinit Filter</Button>
+                  )}
+                  onPress={() => reinit()}
+                />
+              }
+            />
+            {displayError ? <Text> {nothing}</Text> : null}
+          </Card.Content>
+          <Card.Content style={styles.containerMap}>
+            {/* <Ionicons name="filter" size={24} color="black" />
+        <Button  onPress={() => activeFilter()}>Filtrer</Button> */}
+            {/* {displayFilter ? (
+              <Card>
+                <Card.Title title="Filtrer les résultats" />
+                <Card.Content>
+                  <Text> {nameStation}</Text>
+                  <Button onPress={() => filterByStatus()}>
+                    Voir uniquement les stations ouvertes
+                  </Button>
+                  <Button onPress={() => filterByDispo()}>
+                    Voir uniquement les stations avec vélos disponibles
+                  </Button>
+                  <Button onPress={() => reinit()}>Reinit Filter</Button>
+                </Card.Content>
+              </Card>
+            ) : null} */}
+            {displayMap ? (
+              <MapboxGL.MapView
+                style={styles.map}
+                styleURL={MapboxGL.StyleURL.Outdoors}
+              >
+                <MapboxGL.Camera
+                  zoomLevel={3}
+                  centerCoordinate={coordinates}
+                  animationMode={"flyTo"}
+                />
+
+                {stationState.map((val) => (
+                  <>
+                    <MapboxGL.MarkerView
+                      coordinate={[
+                        val.position.longitude,
+                        val.position.latitude,
+                      ]}
+                      id={val.address}
+                    >
+                      <StationCallout
+                        station={val}
+                        title={val.contractName}
+                        navigation={props.navigation}
+                        route={props.route}
+                      />
+                    </MapboxGL.MarkerView>
+                  </>
+                ))}
+              </MapboxGL.MapView>
+            ) : null}
+            <Portal>
+              <FAB.Group
+                visible
+                open={displayFilter}
+                icon="filter"
+                theme={{ colors: { accent: "blue" } }}
+                // style={styles.test}
+                actions={[
+                  {
+                    icon: "plus",
+                    onPress: () => filterByStatus(),
+                    style: { backgroundColor: "red" },
+                  },
+                  {
+                    icon: "star",
+                    label: "Star",
+                    onPress: () => console.log("Pressed star"),
+                  },
+                  {
+                    icon: "email",
+                    label: "Email",
+                    onPress: () => filterByDispo(),
+                  },
+                  {
+                    icon: "bell",
+                    label: "Remind",
+                    onPress: () => reinit(),
+                    small: false,
+                  },
+                ]}
+                onStateChange={() => activeFilter()}
+                onPress={() => activeFilter}
+              />
+            </Portal>
           </Card.Content>
         </Card>
-      ) : null} */}
-      </Card>
+      </Provider>
     </>
   );
 }
@@ -179,7 +218,12 @@ export default function Map(props: MapComponentProps) {
 const styles = StyleSheet.create({
   containerGlobal: {
     padding: 0,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
     // backgroundColor : 'yellow',
+    elevation: 12,
     flex: 1,
   },
   containerInput: {
@@ -188,10 +232,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     // backgroundColor: "green",
   },
+  input: {
+    fontSize: 15,
+    backgroundColor: "white",
+  },
+  containerFab: {
+    height: 50,
+    width: "100%",
+    backgroundColor: "red",
+  },
   containerMap: {
     height: 600,
     width: "100%",
     marginTop: 50,
+    marginBottom: 50,
     // backgroundColor: "tomato",
   },
   map: {
@@ -202,6 +256,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
+  },
+  button: {
+    backgroundColor: "blue",
+    position: "absolute",
+    width: 200,
+    height: 200,
+    zIndex: 1,
+
+    // alignItems: 'center',
+    // alignSelf: 'center',
+    // bottom: height / 6.2,
   },
   touchableContainer: {
     borderColor: "black",
@@ -220,5 +285,12 @@ const styles = StyleSheet.create({
   touchableText: {
     color: "white",
     fontWeight: "bold",
+  },
+  fab: {
+    backgroundColor: "red",
+    margin: 16,
+    // borderRadius: 100,
+    // right: 0,
+    // bottom: 0,
   },
 });
