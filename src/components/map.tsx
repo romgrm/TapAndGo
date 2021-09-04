@@ -50,19 +50,38 @@ export default function Map(props: MapComponentProps) {
   const activeFilter = () => {
     setDisplayFilter(true);
   };
-
+  let isTrue: boolean;
   async function filterByName(input: string) {
-    if (input.length > 0) {
-      setNameStation(input);
-      const byName = stationState.filter((val) =>
-        val.contractName.startsWith(nameStation.toLowerCase())
-      );
+    setNameStation(input);
+    isTrue = stationState.some((val) =>
+      val.contractName.startsWith(input.toLowerCase())
+    );
+    if (isTrue) {
+      const byName = stationState.filter((val) => (val.contractName.startsWith(nameStation.toLowerCase())));
       setStationState(byName);
     } else {
-      setNameStation("");
+      setDisplayError(true);
+      // setNameStation("");
       setStationState(await props.station.slice(0, 10));
     }
   }
+  // async function filterByName(input: string) {
+  //   if (input.length > 0) {
+  //     setNameStation(input);
+  //     const byName = stationState.filter((val) =>
+  //       val.contractName.startsWith(nameStation.toLowerCase())
+  //     );
+  //     setStationState(byName);
+  //   } else {
+  //     setNameStation("");
+  //     setStationState(await props.station.slice(0, 10));
+  //   }
+  // }
+
+  // Je récup l'input
+  // je regarde si il correspond à un element de mon stationState avec startWith
+  // si oui -> je filtre/map et je remplace par l'input
+  // si non je déclenche l'error
 
   const filterByStatus = () => {
     const byStatus = stationState.filter((val) => val.status === "OPEN");
@@ -78,6 +97,7 @@ export default function Map(props: MapComponentProps) {
   async function reinit() {
     setStationState(await props.station.slice(0, 10));
     setNameStation("");
+    setDisplayError(false); 
   }
 
   const coordinates = [2.213749, 46.227638];
