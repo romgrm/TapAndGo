@@ -2,16 +2,22 @@ import React, { FC } from "react";
 import { Text, StyleSheet, Image } from "react-native";
 import { Card, Surface } from "react-native-paper";
 import { globalStyles } from "../styles/globalStyles";
-
-interface Props {
-  route: any;
+import { RouteProp } from '@react-navigation/native'; 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+interface InfosScreenProps {
+  navigation: NativeStackNavigationProp<MainNavigatorParamsList, "InfosScreen">
+  route: RouteProp<MainNavigatorParamsList, "InfosScreen">
 }
 
+// interface Props {
+//   route: any;
+// }
 
-export default function InformationsScreen({route}: Props) {
+export default function InformationsScreen(props: InfosScreenProps) {
+  // const { sendInfosStation } = route.params;
+  // const infosStation: Station = sendInfosStation;
 
-    const { sendInfosStation } = route.params; 
-    const infosStation: Station = sendInfosStation;
+  const { contractName, status } = props.route.params; 
   return (
     <Card>
       <Surface style={styles.surfaceCover}>
@@ -21,10 +27,14 @@ export default function InformationsScreen({route}: Props) {
         />
         {/* <Card.Title title={params.titleStation} titleStyle={globalStyles.title}/> */}
       </Surface>
-
-      <Text>Informations Screen {infosStation.contractName} hello</Text>
+<Text>{contractName}</Text>
+<Text>{status}</Text>
+      {/* <Text>Informations Screen {infosStation.contractName} hello</Text>
       <Text>Informations Screen {infosStation.address} hello</Text>
-      <Text>Informations Screen {infosStation.mainStands.availabilities.electricalBikes} hello</Text>
+      <Text>
+        Informations Screen{" "}
+        {infosStation.mainStands.availabilities.electricalBikes} hello
+      </Text> */}
     </Card>
   );
 }

@@ -6,7 +6,6 @@ interface Props {
 }
 
 export function MapScreen(props: Props) {
-  
   return (
     <View>
       <Text>Map Screen</Text>

@@ -16,18 +16,31 @@ import {
   Card,
 } from "react-native-paper";
 
-interface Callout {
-  navigation: any;
+import { RouteProp } from '@react-navigation/native'; 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+interface calloutComponentProps {
+  navigation: NativeStackNavigationProp<MainNavigatorParamsList, "MapScreen">
+  route: RouteProp<MainNavigatorParamsList, "MapScreen">
   title: string;
   station: Station;
 }
 
-export default function stationCallout(props: Callout) {
+// interface Callout {
+//   title: string;
+//   navigation: any;
+//   station: Station;
+// }
+
+export default function stationCallout(props: calloutComponentProps) {
+  const { navigation, route } = props; 
   const goInfos = (station: Station) => {
-    props.navigation.navigate("Infos", {
-       sendInfosStation: station,
-    });
+    navigation.navigate("InfosScreen",station)
   };
+  // const goInfos = (station: Station) => {
+  //   props.navigation.navigate("Infos", {
+  //     sendInfosStation: station,
+  //   });
+  // };
   return (
     <View style={styles.touchableContainer}>
       {/* <Text>{props.title}</Text> */}

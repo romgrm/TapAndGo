@@ -10,7 +10,7 @@ import {
   Portal,
   Provider,
   Card,
-  TextInput
+  TextInput,
 } from "react-native-paper";
 import StationCallout from "./stationCallout";
 
@@ -30,15 +30,23 @@ Logger.setLogCallback((log) => {
   return false;
 });
 
-interface Props {
-  navigation: any;
+import { RouteProp } from '@react-navigation/native'; 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+interface MapComponentProps {
+  navigation: NativeStackNavigationProp<MainNavigatorParamsList, "MapScreen">
+  route: RouteProp<MainNavigatorParamsList, "MapScreen">
   station: Station[];
 }
-export default function Map(props: Props) {
+
+// interface Props {
+//   navigation: any;
+//   station: Station[];
+// }
+export default function Map(props: MapComponentProps) {
   const [stationState, setStationState] = useState<Station[]>([]);
   const [displayMap, setDisplayMap] = useState<boolean>(false);
   const [displayFilter, setDisplayFilter] = useState<boolean>(false);
-  const [nameStation, setNameStation] = useState<string>(""); 
+  const [nameStation, setNameStation] = useState<string>("");
 
   useEffect(() => {
     async function display() {
@@ -52,17 +60,19 @@ export default function Map(props: Props) {
     setDisplayFilter(true);
   };
 
-  async function filterByName(input : string)  {
-    if(input.length > 0){
-      const valueInput = input.toLowerCase()
-      setNameStation(valueInput)
-      const byName = stationState.filter((val) => val.contractName.startsWith(nameStation));
+  async function filterByName(input: string) {
+    if (input.length > 0) {
+      const valueInput = input.toLowerCase();
+      setNameStation(valueInput);
+      const byName = stationState.filter((val) =>
+        val.contractName.startsWith(nameStation)
+      );
       setStationState(byName);
-    }else{
-      setNameStation('')
-      setStationState(await props.station.slice(0,10))
+    } else {
+      setNameStation("");
+      setStationState(await props.station.slice(0, 10));
     }
-  };
+  }
 
   const filterByStatus = () => {
     const byStatus = stationState.filter((val) => val.status === "OPEN");
@@ -77,7 +87,7 @@ export default function Map(props: Props) {
   };
   async function reinit() {
     setStationState(await props.station.slice(0, 10));
-    setNameStation("")
+    setNameStation("");
   }
 
   const coordinates = [2.213749, 46.227638];
@@ -87,26 +97,27 @@ export default function Map(props: Props) {
         <View style={styles.container}>
           {displayMap ? (
             <MapboxGL.MapView
-            style={styles.map}
-            styleURL={MapboxGL.StyleURL.Outdoors}
+              style={styles.map}
+              styleURL={MapboxGL.StyleURL.Outdoors}
             >
               <MapboxGL.Camera
                 zoomLevel={3}
                 centerCoordinate={coordinates}
                 animationMode={"flyTo"}
-                />
+              />
 
               {stationState.map((val) => (
                 <>
                   <MapboxGL.MarkerView
                     coordinate={[val.position.longitude, val.position.latitude]}
                     id={val.address}
-                    >
+                  >
                     <StationCallout
                       station={val}
                       title={val.contractName}
                       navigation={props.navigation}
-                      />
+                      route={props.route}
+                    />
                   </MapboxGL.MarkerView>
                 </>
               ))}
@@ -125,8 +136,8 @@ export default function Map(props: Props) {
               placeholder="Entrer un nom de ville"
               value={nameStation}
               onChangeText={async (input: string) => await filterByName(input)}
-              />
-              <Text> {nameStation}</Text>
+            />
+            <Text> {nameStation}</Text>
             {/* <Button onPress={() => filterByName()}>
               Rechercher une station par son nom
             </Button> */}

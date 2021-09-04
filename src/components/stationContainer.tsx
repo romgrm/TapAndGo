@@ -16,27 +16,17 @@ import {
 } from "react-native-paper";
 import Map from "./map";
 import { useLayoutEffect } from "react";
-
-MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
-MapboxGL.setConnected(true);
-
-Logger.setLogCallback((log) => {
-  const { message } = log;
-
-  // expected warnings - see https://github.com/mapbox/mapbox-gl-native/issues/15341#issuecomment-522889062
-  if (
-    message.match("Request failed due to a permanent error: Canceled") ||
-    message.match("Request failed due to a permanent error: Socket Closed")
-  ) {
-    return true;
-  }
-  return false;
-});
-
-interface Props {
-  navigation: any;
+import { RouteProp } from '@react-navigation/native'; 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+interface MapScreenProps {
+  navigation: NativeStackNavigationProp<MainNavigatorParamsList, "MapScreen">
+  route: RouteProp<MainNavigatorParamsList, "MapScreen">
 }
-export default function stationsContainer(props: Props) {
+
+// interface Props {
+//   navigation: any;
+// }
+export default function stationsContainer(props: MapScreenProps) {
   const stations = useSelector((state: RootState) => state.stations.stations);
   const dispatch = useDispatch();
 
@@ -46,7 +36,7 @@ export default function stationsContainer(props: Props) {
 
   return (
     <>
-    <Map navigation={props.navigation} station={stations} />
+      <Map navigation={props.navigation} station={stations} route={props.route} />
     </>
   );
 }
