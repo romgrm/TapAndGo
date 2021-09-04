@@ -19,6 +19,7 @@ import { Entypo } from "@expo/vector-icons";
 import { globalColor } from "../styles/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "react-native-reanimated";
+import { mdiBicycleElectric } from '@mdi/js';
 
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
@@ -83,11 +84,17 @@ export default function Map(props: MapComponentProps) {
     setStationState(byStatus);
   };
 
-  const filterByDispo = () => {
-    const byDispo = stationState.filter(
-      (val) => val.mainStands.availabilities.bikes < 0
+  const filterByMechanicalBikeDispo = () => {
+    const byMechanicalBikeDispo = stationState.filter(
+      (val) => val.mainStands.availabilities.bikes > 0
     );
-    setStationState(byDispo);
+    setStationState(byMechanicalBikeDispo);
+  };
+  const filterByElectricalBikeDispo = () => {
+    const byElectricalBikeDispo = stationState.filter(
+      (val) => val.mainStands.availabilities.electricalBikes < 0
+    );
+    setStationState(byElectricalBikeDispo);
   };
   async function reinit() {
     setStationState(await props.station.slice(0, 10));
@@ -178,30 +185,31 @@ export default function Map(props: MapComponentProps) {
               <FAB.Group
                 visible
                 open={displayFilter}
-                icon="filter"
+                icon={displayFilter? "close": "filter-variant"}
+                style={styles.fab}
+                fabStyle={{backgroundColor: '#7158e2'}}
                 theme={{ colors: { accent: "blue" } }}
                 // style={styles.test}
                 actions={[
                   {
-                    icon: "plus",
-                    onPress: () => filterByStatus(),
-                    style: { backgroundColor: "red" },
-                  },
-                  {
-                    icon: "star",
-                    label: "Star",
-                    onPress: () => console.log("Pressed star"),
-                  },
-                  {
-                    icon: "email",
-                    label: "Email",
-                    onPress: () => filterByDispo(),
-                  },
-                  {
-                    icon: "bell",
-                    label: "Remind",
+                    icon: "close",
+                    label: "Reinitialiser les filtres",
                     onPress: () => reinit(),
-                    small: false,
+                  },
+                  {
+                    icon: "home",
+                    label: "Uniquement les stations ouvertes",
+                    onPress: () => filterByStatus(),
+                  },
+                  {
+                    icon: "bicycle",
+                    label: "Uniquement les stations avec vélos mécaniques disponibles",
+                    onPress: () => filterByMechanicalBikeDispo(),
+                  },
+                  {
+                    icon: "flash",
+                    label: "Uniquement les stations avec vélos électriques disponibles",
+                    onPress: () => filterByElectricalBikeDispo(),
                   },
                 ]}
                 onStateChange={() => activeFilter()}
@@ -287,8 +295,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   fab: {
-    backgroundColor: "red",
     margin: 16,
+    marginBottom: 60,
     // borderRadius: 100,
     // right: 0,
     // bottom: 0,
