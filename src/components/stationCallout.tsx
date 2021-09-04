@@ -18,7 +18,7 @@ export default function stationCallout(props: calloutComponentProps) {
   };
   
   return (
-    <View style={styles.touchableContainer}>
+    <View style={styles.touchableContainer} key={props.station.address}>
       <TouchableOpacity
         onPress={() => goInfos(props.station)}
         style={styles.touchableLogo}

@@ -17,9 +17,6 @@ import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Entypo } from "@expo/vector-icons";
 import { globalColor } from "../styles/globalStyles";
-import { Ionicons } from "@expo/vector-icons";
-import { color } from "react-native-reanimated";
-import { mdiBicycleElectric } from '@mdi/js';
 
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
@@ -61,6 +58,7 @@ export default function Map(props: MapComponentProps) {
   const activeFilter = () => {
     setDisplayFilter(!displayFilter);
   };
+
   let isTrue: boolean;
   async function filterByName(input: string) {
     setNameStation(input);
@@ -74,29 +72,31 @@ export default function Map(props: MapComponentProps) {
       setStationState(byName);
     } else {
       setDisplayError(true);
-      // setNameStation("");
       setStationState(await props.station.slice(0, 10));
     }
   }
 
   const filterByStatus = () => {
+    reinitialisation()
     const byStatus = stationState.filter((val) => val.status === "OPEN");
     setStationState(byStatus);
   };
 
   const filterByMechanicalBikeDispo = () => {
+    reinitialisation()
     const byMechanicalBikeDispo = stationState.filter(
       (val) => val.mainStands.availabilities.bikes > 0
     );
     setStationState(byMechanicalBikeDispo);
   };
   const filterByElectricalBikeDispo = () => {
+    
     const byElectricalBikeDispo = stationState.filter(
       (val) => val.mainStands.availabilities.electricalBikes < 0
     );
     setStationState(byElectricalBikeDispo);
   };
-  async function reinit() {
+  async function reinitialisation() {
     setStationState(await props.station.slice(0, 10));
     setNameStation("");
     setDisplayError(false);
@@ -126,34 +126,18 @@ export default function Map(props: MapComponentProps) {
                       style={globalColor.violet}
                     />
                   )}
-                  onPress={() => reinit()}
+                  onPress={() => reinitialisation()}
                 />
               }
             />
             {displayError ? <Text> {nothing}</Text> : null}
           </Card.Content>
           <Card.Content style={styles.containerMap}>
-            {/* <Ionicons name="filter" size={24} color="black" />
-        <Button  onPress={() => activeFilter()}>Filtrer</Button> */}
-            {/* {displayFilter ? (
-              <Card>
-                <Card.Title title="Filtrer les résultats" />
-                <Card.Content>
-                  <Text> {nameStation}</Text>
-                  <Button onPress={() => filterByStatus()}>
-                    Voir uniquement les stations ouvertes
-                  </Button>
-                  <Button onPress={() => filterByDispo()}>
-                    Voir uniquement les stations avec vélos disponibles
-                  </Button>
-                  <Button onPress={() => reinit()}>Reinit Filter</Button>
-                </Card.Content>
-              </Card>
-            ) : null} */}
             {displayMap ? (
               <MapboxGL.MapView
                 style={styles.map}
                 styleURL={MapboxGL.StyleURL.Outdoors}
+                key={1}
               >
                 <MapboxGL.Camera
                   zoomLevel={3}
@@ -162,13 +146,13 @@ export default function Map(props: MapComponentProps) {
                 />
 
                 {stationState.map((val) => (
-                  <>
                     <MapboxGL.MarkerView
                       coordinate={[
                         val.position.longitude,
                         val.position.latitude,
                       ]}
                       id={val.address}
+                      key={val.number+val.contractName}
                     >
                       <StationCallout
                         station={val}
@@ -177,7 +161,7 @@ export default function Map(props: MapComponentProps) {
                         route={props.route}
                       />
                     </MapboxGL.MarkerView>
-                  </>
+                  
                 ))}
               </MapboxGL.MapView>
             ) : null}
@@ -185,16 +169,13 @@ export default function Map(props: MapComponentProps) {
               <FAB.Group
                 visible
                 open={displayFilter}
-                icon={displayFilter? "close": "filter-variant"}
-                style={styles.fab}
-                fabStyle={{backgroundColor: '#7158e2'}}
-                theme={{ colors: { accent: "blue" } }}
-                // style={styles.test}
+                icon={displayFilter ? "close" : "filter-variant"}
+                fabStyle={{ backgroundColor: "#7158e2", marginBottom:75, marginRight: 25 }}
                 actions={[
                   {
                     icon: "close",
                     label: "Reinitialiser les filtres",
-                    onPress: () => reinit(),
+                    onPress: () => reinitialisation(),
                   },
                   {
                     icon: "home",
@@ -203,12 +184,14 @@ export default function Map(props: MapComponentProps) {
                   },
                   {
                     icon: "bicycle",
-                    label: "Uniquement les stations avec vélos mécaniques disponibles",
+                    label:
+                      "Uniquement les stations avec vélos mécaniques disponibles",
                     onPress: () => filterByMechanicalBikeDispo(),
                   },
                   {
                     icon: "flash",
-                    label: "Uniquement les stations avec vélos électriques disponibles",
+                    label:
+                      "Uniquement les stations avec vélos électriques disponibles",
                     onPress: () => filterByElectricalBikeDispo(),
                   },
                 ]}
@@ -230,7 +213,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
-    // backgroundColor : 'yellow',
     elevation: 12,
     flex: 1,
   },
@@ -238,7 +220,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 100,
     justifyContent: "center",
-    // backgroundColor: "green",
   },
   input: {
     fontSize: 15,
@@ -254,7 +235,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 50,
     marginBottom: 50,
-    // backgroundColor: "tomato",
   },
   map: {
     elevation: 12,
@@ -271,10 +251,6 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     zIndex: 1,
-
-    // alignItems: 'center',
-    // alignSelf: 'center',
-    // bottom: height / 6.2,
   },
   touchableContainer: {
     borderColor: "black",
@@ -293,12 +269,5 @@ const styles = StyleSheet.create({
   touchableText: {
     color: "white",
     fontWeight: "bold",
-  },
-  fab: {
-    margin: 16,
-    marginBottom: 60,
-    // borderRadius: 100,
-    // right: 0,
-    // bottom: 0,
   },
 });

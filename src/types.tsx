@@ -1,5 +1,5 @@
 interface Station {
-  id: number;
+  number: number;
   contractName: string;
   address: string;
   position: {
