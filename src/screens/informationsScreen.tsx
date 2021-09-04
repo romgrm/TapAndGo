@@ -1,21 +1,14 @@
-import React, { FC } from "react";
+import React from "react";
 import { Text, StyleSheet, Image } from "react-native";
 import { Card, Surface } from "react-native-paper";
-import { globalStyles } from "../styles/globalStyles";
 import { RouteProp } from '@react-navigation/native'; 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 interface InfosScreenProps {
-  navigation: NativeStackNavigationProp<MainNavigatorParamsList, "InfosScreen">
-  route: RouteProp<MainNavigatorParamsList, "InfosScreen">
+  navigation: NativeStackNavigationProp<RootNavigationParamsList, "InfosScreen">
+  route: RouteProp<RootNavigationParamsList, "InfosScreen">
 }
 
-// interface Props {
-//   route: any;
-// }
-
 export default function InformationsScreen(props: InfosScreenProps) {
-  // const { sendInfosStation } = route.params;
-  // const infosStation: Station = sendInfosStation;
 
   const { contractName, status } = props.route.params; 
   return (

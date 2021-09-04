@@ -1,26 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet } from "react-native";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { Environments } from "../config/environment";
 import { Logger } from "@react-native-mapbox-gl/maps";
-import {
-  Button,
-  Modal,
-  Text,
-  Portal,
-  Provider,
-  Card,
-  TextInput,
-} from "react-native-paper";
+import { Button, Text, Card, TextInput } from "react-native-paper";
 import StationCallout from "./stationCallout";
+import { RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Entypo } from "@expo/vector-icons";
+import { globalColor } from "../styles/globalStyles";
 
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
 
 Logger.setLogCallback((log) => {
   const { message } = log;
-
-  // expected warnings - see https://github.com/mapbox/mapbox-gl-native/issues/15341#issuecomment-522889062
   if (
     message.match("Request failed due to a permanent error: Canceled") ||
     message.match("Request failed due to a permanent error: Socket Closed")
@@ -30,23 +24,20 @@ Logger.setLogCallback((log) => {
   return false;
 });
 
-import { RouteProp } from '@react-navigation/native'; 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 interface MapComponentProps {
-  navigation: NativeStackNavigationProp<MainNavigatorParamsList, "MapScreen">
-  route: RouteProp<MainNavigatorParamsList, "MapScreen">
+  navigation: NativeStackNavigationProp<RootNavigationParamsList, "MapScreen">;
+  route: RouteProp<RootNavigationParamsList, "MapScreen">;
   station: Station[];
 }
 
-// interface Props {
-//   navigation: any;
-//   station: Station[];
-// }
 export default function Map(props: MapComponentProps) {
   const [stationState, setStationState] = useState<Station[]>([]);
   const [displayMap, setDisplayMap] = useState<boolean>(false);
   const [displayFilter, setDisplayFilter] = useState<boolean>(false);
   const [nameStation, setNameStation] = useState<string>("");
+  const [displayError, setDisplayError] = useState<boolean>(false);
+
+  const nothing = `il semblerait que ${nameStation} n'existe pas en nom de station`;
 
   useEffect(() => {
     async function display() {
@@ -62,10 +53,9 @@ export default function Map(props: MapComponentProps) {
 
   async function filterByName(input: string) {
     if (input.length > 0) {
-      const valueInput = input.toLowerCase();
-      setNameStation(valueInput);
+      setNameStation(input);
       const byName = stationState.filter((val) =>
-        val.contractName.startsWith(nameStation)
+        val.contractName.startsWith(nameStation.toLowerCase())
       );
       setStationState(byName);
     } else {
@@ -93,8 +83,29 @@ export default function Map(props: MapComponentProps) {
   const coordinates = [2.213749, 46.227638];
   return (
     <>
-      <View style={styles.page}>
-        <View style={styles.container}>
+      <Card style={styles.containerGlobal}>
+        <Card.Content style={styles.containerInput}>
+          <TextInput
+            label="Entrer un nom de ville pour trouver une station"
+            mode="outlined"
+            value={nameStation}
+            onChangeText={async (input: string) => await filterByName(input)}
+            right={
+              <TextInput.Icon
+                name={() => (
+                  <Entypo
+                    name="circle-with-cross"
+                    size={24}
+                    style={globalColor.violet}
+                  />
+                )}
+                onPress={() => reinit()}
+              />
+            }
+          />
+          {displayError ? <Text> {nothing}</Text> : null}
+        </Card.Content>
+        <Card.Content style={styles.containerMap}>
           {displayMap ? (
             <MapboxGL.MapView
               style={styles.map}
@@ -123,24 +134,13 @@ export default function Map(props: MapComponentProps) {
               ))}
             </MapboxGL.MapView>
           ) : null}
-        </View>
-      </View>
-      <Button onPress={() => activeFilter()}>Filtrer</Button>
+        </Card.Content>
+        {/* <Button onPress={() => activeFilter()}>Filtrer</Button>
       {displayFilter ? (
         <Card>
           <Card.Title title="Filtrer les résultats" />
           <Card.Content>
-            <TextInput
-              label="filterName"
-              mode="outlined"
-              placeholder="Entrer un nom de ville"
-              value={nameStation}
-              onChangeText={async (input: string) => await filterByName(input)}
-            />
             <Text> {nameStation}</Text>
-            {/* <Button onPress={() => filterByName()}>
-              Rechercher une station par son nom
-            </Button> */}
             <Button onPress={() => filterByStatus()}>
               Voir uniquement les stations ouvertes
             </Button>
@@ -150,26 +150,38 @@ export default function Map(props: MapComponentProps) {
             <Button onPress={() => reinit()}>Reinit Filter</Button>
           </Card.Content>
         </Card>
-      ) : null}
+      ) : null} */}
+      </Card>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
+  containerGlobal: {
+    padding: 0,
+    // backgroundColor : 'yellow',
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
   },
-  container: {
+  containerInput: {
+    width: "100%",
+    height: 100,
+    justifyContent: "center",
+    // backgroundColor: "green",
+  },
+  containerMap: {
     height: 600,
-    width: 400,
-    backgroundColor: "tomato",
+    width: "100%",
+    marginTop: 50,
+    // backgroundColor: "tomato",
   },
   map: {
+    elevation: 12,
     flex: 1,
     overflow: "hidden",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   touchableContainer: {
     borderColor: "black",

@@ -2,17 +2,21 @@ import { StyleSheet, Platform } from "react-native";
 
 export const globalStyles = StyleSheet.create({
   titleApp: {
-    fontFamily: "Regular",
+    fontFamily: "Bold",
     fontSize: 30,
-    color: "#9BA4B0",
+    alignSelf:"center",
+    color: "#7158e2",
+    margin: 20
   },
   title: {
     fontFamily: "Bold",
     textTransform: "capitalize",
   },
   subTitle: {
-    fontFamily: "Sofia-Regular",
-    fontSize: 20,
+    fontFamily: "Medium",
+    fontSize: 15,
+    textAlign: "center",
+    color: "#778ca3"
   },
   text: {
     fontSize: 20,
@@ -23,3 +27,13 @@ export const globalStyles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? 40 : 0,
   },
 });
+
+export const globalColor = StyleSheet.create({
+  violet:{
+    color: "#7158e2"
+  },
+  grey:{
+    color:"#778ca3"
+  }
+});
+
