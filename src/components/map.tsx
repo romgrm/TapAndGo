@@ -5,12 +5,12 @@ import { Environments } from "../config/environment";
 import { Logger } from "@react-native-mapbox-gl/maps";
 import {
   Chip,
-  Text,
   Card,
   TextInput,
   FAB,
   Portal,
   Provider,
+  Caption,
 } from "react-native-paper";
 import StationCallout from "./stationCallout";
 import { RouteProp } from "@react-navigation/native";
@@ -42,6 +42,11 @@ interface MapComponentProps {
   station: Station[];
 }
 
+/**
+ * Component which display the map, the searchBar and filters
+ * @param props received by navigationType. Type Station because we pass through the screens the data received by the API, in the route.params
+ * @returns
+ */
 export default function Map(props: MapComponentProps) {
   const [stationState, setStationState] = useState<Station[]>([]);
   const [displayMap, setDisplayMap] = useState<boolean>(false);
@@ -59,9 +64,11 @@ export default function Map(props: MapComponentProps) {
     setDisplayCapsuleFilterByElectricalBike,
   ] = useState<boolean>(false);
 
-  const nothing = `il semblerait que ${nameStation} n'existe pas en nom de station`;
+  const coordinates = [2.213749, 46.227638];
 
-  let isTrue: boolean;
+  const noStationResult = `Il semblerait que nous ne disposions pas encore de station à ${nameStation}`;
+
+  let isInputMatch: boolean;
 
   useEffect(() => {
     const display = () => {
@@ -82,10 +89,10 @@ export default function Map(props: MapComponentProps) {
       reinitialisation();
       return;
     }
-    isTrue = stationState.some((val) =>
+    isInputMatch = stationState.some((val) =>
       val.contractName.startsWith(input.toLowerCase())
     );
-    if (isTrue) {
+    if (isInputMatch) {
       const byName = stationState.filter((val) =>
         val.contractName.startsWith(nameStation.toLowerCase())
       );
@@ -125,8 +132,6 @@ export default function Map(props: MapComponentProps) {
     setDisplayCapsuleFilterByElectricalBike(false);
   };
 
-  const coordinates = [2.213749, 46.227638];
-
   return (
     <>
       <Provider>
@@ -154,7 +159,7 @@ export default function Map(props: MapComponentProps) {
                 />
               }
             />
-            {displayError ? <Text> {nothing}</Text> : null}
+            {displayError ? <Caption> {noStationResult}</Caption> : null}
           </Card.Content>
           <Card.Content style={styles.containerMap}>
             <Card.Content style={styles.containerCapsuleFilter}>

@@ -11,7 +11,7 @@ interface MapScreenProps {
 }
 /**
  * First screen who display the map Component
- * @param props received by navigationType. Undefined because we don't need route.params in this screen
+ * @param props received by navigationType. Type Station because we pass through the screens the data received by the API, in the route.params
  */
 export default function MapScreen(props: MapScreenProps) {
   return (

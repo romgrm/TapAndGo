@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, Image,  } from "react-native";
+import { Text, StyleSheet, Image } from "react-native";
 import {
   Card,
   Surface,
@@ -8,7 +8,7 @@ import {
   Avatar,
   Badge,
   IconButton,
-  Divider
+  Divider,
 } from "react-native-paper";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -16,13 +16,14 @@ import { globalStyles } from "../styles/globalStyles";
 import { AntDesign } from "@expo/vector-icons";
 
 interface InfosScreenProps {
-  navigation: NativeStackNavigationProp<
-    RootNavigationParamsList,
-    "InfosScreen"
-  >;
+  navigation: NativeStackNavigationProp<RootNavigationParamsList,"InfosScreen">;
   route: RouteProp<RootNavigationParamsList, "InfosScreen">;
 }
 
+/**
+ * Component which display more infos about selected station
+ * @param props 
+ */
 export default function InformationsScreen(props: InfosScreenProps) {
   const { contractName, status, address, mainStands } = props.route.params;
 
@@ -38,8 +39,8 @@ export default function InformationsScreen(props: InfosScreenProps) {
           color="white"
           size={40}
           onPress={() => props.navigation.goBack()}
-          style={{position:'absolute', top:40}}
-          />
+          style={{ position: "absolute", top: 40 }}
+        />
       </Surface>
       <Card style={styles.cardContainer}>
         <Card.Content style={styles.titleContainer}>
@@ -58,7 +59,7 @@ export default function InformationsScreen(props: InfosScreenProps) {
           />
           <Subheading style={globalStyles.subTitle}>{address}</Subheading>
         </Card.Content>
-        <Divider style={styles.divider}/>
+        <Divider style={styles.divider} />
         <Surface style={styles.surfaceCardContent}>
           <List.Item
             title="vélos mécaniques disponibles"
@@ -142,15 +143,15 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom:10
+    marginBottom: 10,
   },
   addressLogo: {
-    marginRight: 10,
+    marginRight: '2%',
     alignSelf: "center",
   },
-  divider:{
-    width:'50%',
-    alignSelf:'center'
+  divider: {
+    width: "50%",
+    alignSelf: "center",
   },
   surfaceCardContent: {
     elevation: 4,
