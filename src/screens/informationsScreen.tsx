@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, Image } from "react-native";
+import { Text, StyleSheet, Image, StatusBar } from "react-native";
 import { Card, Surface } from "react-native-paper";
 import { RouteProp } from '@react-navigation/native'; 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'

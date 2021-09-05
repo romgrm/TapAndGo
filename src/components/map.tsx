@@ -4,6 +4,7 @@ import MapboxGL from "@react-native-mapbox-gl/maps";
 import { Environments } from "../config/environment";
 import { Logger } from "@react-native-mapbox-gl/maps";
 import {
+  Chip,
   Button,
   Text,
   Card,
@@ -44,14 +45,26 @@ export default function Map(props: MapComponentProps) {
   const [displayFilter, setDisplayFilter] = useState<boolean>(false);
   const [nameStation, setNameStation] = useState<string>("");
   const [displayError, setDisplayError] = useState<boolean>(false);
+  const [displayCapsuleFilterByStatus, setDisplayCapsuleFilterByStatus] =
+    useState<boolean>(false);
+  const [
+    displayCapsuleFilterMechanicalBike,
+    setDisplayCapsuleFilterByMechanicalBike,
+  ] = useState<boolean>(false);
+  const [
+    displayCapsuleFilterByElectricalBike,
+    setDisplayCapsuleFilterByElectricalBike,
+  ] = useState<boolean>(false);
 
   const nothing = `il semblerait que ${nameStation} n'existe pas en nom de station`;
 
+  let isTrue: boolean;
+
   useEffect(() => {
-    async function display() {
-      setStationState(await props.station.slice(0, 10));
+    const display = () => {
+      setStationState(props.station.slice(0, 10));
       setDisplayMap(true);
-    }
+    };
     display();
   }, [props.station]);
 
@@ -59,8 +72,7 @@ export default function Map(props: MapComponentProps) {
     setDisplayFilter(!displayFilter);
   };
 
-  let isTrue: boolean;
-  async function filterByName(input: string) {
+  const filterByName = (input: string) => {
     setNameStation(input);
     isTrue = stationState.some((val) =>
       val.contractName.startsWith(input.toLowerCase())
@@ -72,35 +84,38 @@ export default function Map(props: MapComponentProps) {
       setStationState(byName);
     } else {
       setDisplayError(true);
-      setStationState(await props.station.slice(0, 10));
+      setStationState(props.station.slice(0, 10));
     }
-  }
+  };
 
   const filterByStatus = () => {
-    reinitialisation()
-    const byStatus = stationState.filter((val) => val.status === "OPEN");
+    setDisplayCapsuleFilterByStatus(true);
+    const byStatus = () => stationState.filter((val) => val.status === "OPEN");
     setStationState(byStatus);
   };
 
   const filterByMechanicalBikeDispo = () => {
-    reinitialisation()
+    setDisplayCapsuleFilterByMechanicalBike(true);
     const byMechanicalBikeDispo = stationState.filter(
       (val) => val.mainStands.availabilities.bikes > 0
     );
     setStationState(byMechanicalBikeDispo);
   };
   const filterByElectricalBikeDispo = () => {
-    
+    setDisplayCapsuleFilterByElectricalBike(true);
     const byElectricalBikeDispo = stationState.filter(
-      (val) => val.mainStands.availabilities.electricalBikes < 0
+      (val) => val.mainStands.availabilities.electricalBikes > 0
     );
     setStationState(byElectricalBikeDispo);
   };
-  async function reinitialisation() {
-    setStationState(await props.station.slice(0, 10));
+  const reinitialisation = () => {
+    setStationState(props.station.slice(0, 10));
     setNameStation("");
     setDisplayError(false);
-  }
+    setDisplayCapsuleFilterByStatus(false);
+    setDisplayCapsuleFilterByMechanicalBike(false);
+    setDisplayCapsuleFilterByElectricalBike(false);
+  };
 
   const coordinates = [2.213749, 46.227638];
   return (
@@ -115,7 +130,7 @@ export default function Map(props: MapComponentProps) {
               selectionColor="black"
               placeholderTextColor="#778ca3"
               value={nameStation}
-              onChangeText={async (input: string) => await filterByName(input)}
+              onChangeText={async (input: string) => filterByName(input)}
               style={styles.input}
               right={
                 <TextInput.Icon
@@ -133,6 +148,17 @@ export default function Map(props: MapComponentProps) {
             {displayError ? <Text> {nothing}</Text> : null}
           </Card.Content>
           <Card.Content style={styles.containerMap}>
+            <Card.Content style={styles.containerCapsuleFilter}>
+              {displayCapsuleFilterByStatus ? (
+                <Chip style={styles.capsuleFilterView} textStyle={styles.capsuleFilterText}>Stations ouvertes</Chip>
+              ) : null}
+              {displayCapsuleFilterMechanicalBike ? (
+                <Chip style={styles.capsuleFilterView} textStyle={styles.capsuleFilterText}>Vélos mécaniques</Chip>
+              ) : null}
+              {displayCapsuleFilterByElectricalBike ? (
+                <Chip style={styles.capsuleFilterView} textStyle={styles.capsuleFilterText}>Vélos électriques</Chip>
+              ) : null}
+            </Card.Content>
             {displayMap ? (
               <MapboxGL.MapView
                 style={styles.map}
@@ -146,22 +172,18 @@ export default function Map(props: MapComponentProps) {
                 />
 
                 {stationState.map((val) => (
-                    <MapboxGL.MarkerView
-                      coordinate={[
-                        val.position.longitude,
-                        val.position.latitude,
-                      ]}
-                      id={val.address}
-                      key={val.number+val.contractName}
-                    >
-                      <StationCallout
-                        station={val}
-                        title={val.contractName}
-                        navigation={props.navigation}
-                        route={props.route}
-                      />
-                    </MapboxGL.MarkerView>
-                  
+                  <MapboxGL.MarkerView
+                    coordinate={[val.position.longitude, val.position.latitude]}
+                    id={val.address}
+                    key={val.number + val.contractName}
+                  >
+                    <StationCallout
+                      station={val}
+                      title={val.contractName}
+                      navigation={props.navigation}
+                      route={props.route}
+                    />
+                  </MapboxGL.MarkerView>
                 ))}
               </MapboxGL.MapView>
             ) : null}
@@ -170,7 +192,11 @@ export default function Map(props: MapComponentProps) {
                 visible
                 open={displayFilter}
                 icon={displayFilter ? "close" : "filter-variant"}
-                fabStyle={{ backgroundColor: "#7158e2", marginBottom:75, marginRight: 25 }}
+                fabStyle={{
+                  backgroundColor: "#7158e2",
+                  marginBottom: 75,
+                  marginRight: 25,
+                }}
                 actions={[
                   {
                     icon: "close",
@@ -218,7 +244,7 @@ const styles = StyleSheet.create({
   },
   containerInput: {
     width: "100%",
-    height: 100,
+    height: 50,
     justifyContent: "center",
   },
   input: {
@@ -235,6 +261,20 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 50,
     marginBottom: 50,
+  },
+  containerCapsuleFilter:{
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%', 
+  },
+  capsuleFilterView:{
+    width: "33%", 
+    marginRight: 3,
+    backgroundColor:'#7158e2',
+  },
+  capsuleFilterText:{
+    color:'white',
+    fontSize:10
   },
   map: {
     elevation: 12,

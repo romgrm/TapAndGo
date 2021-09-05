@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView,StatusBar } from "react-native";
+import { View, StyleSheet, ScrollView, StatusBar } from "react-native";
 import { Text, Button, Card } from "react-native-paper";
 import StationContainer from "../components/stationContainer";
 import { RouteProp } from "@react-navigation/native";
@@ -17,14 +17,15 @@ export default function MapScreen(props: MapScreenProps) {
         style={styles.scrollView}
         contentContainerStyle={{ flexGrow: 1 }}
       >
-         <Card style={styles.cardContainer}>
+        <Card style={styles.cardContainer}>
+          <Text style={globalStyles.titleApp}>Tap & Go</Text>
 
-        <Text style={globalStyles.titleApp}>Tap & Go</Text>
-        
-            <Text style={globalStyles.subTitle}>Trouvez une station, réservez un vélo, déplacez vous dans le monde entier !</Text>
-         </Card>
-        
-          
+          <Text style={globalStyles.subTitle}>
+            Trouvez une station, réservez un vélo, déplacez vous dans le monde
+            entier !
+          </Text>
+        </Card>
+
         <StationContainer navigation={props.navigation} route={props.route} />
         {/* <View style={styles.test}>
         <Text>Hello</Text>
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     paddingTop: 40,
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   cardContainer: {
     flex: 1,
@@ -47,10 +48,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#7158e2",
-    marginBottom: 20, 
+    marginBottom: 20,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
-    elevation: 12
+    elevation: 12,
   },
   cardContent: {
     flex: 1,
@@ -59,8 +60,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     borderBottomEndRadius: 16,
   },
-  test:{
+  test: {
     height: 500,
-    width:'100%'
-  }
+    width: "100%",
+  },
 });

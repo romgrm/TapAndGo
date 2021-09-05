@@ -14,14 +14,17 @@ export default function App() {
     Medium: require("./assets/fonts/NeueHaasGroteskTextProMedium.ttf"),
     Bold: require("./assets/fonts/NeueHaasGroteskTextProBold.ttf"),
   });
-
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
     return (
       <Provider store={store}>
         <SafeAreaView style={globalStyles.droidSafeArea}>
-          <StatusBar translucent backgroundColor="#7158e2" barStyle="dark-content"/>
+          <StatusBar
+            translucent
+            backgroundColor="#7158e2"
+            barStyle="dark-content"
+          />
           <NavigationContainer>
             <RootNavigation />
           </NavigationContainer>
@@ -30,7 +33,3 @@ export default function App() {
     );
   }
 }
-
-const styles =StyleSheet.create({
-
-})
