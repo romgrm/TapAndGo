@@ -10,7 +10,7 @@ import {
   TextInput,
   FAB,
   Portal,
-  Provider
+  Provider,
 } from "react-native-paper";
 import StationCallout from "./stationCallout";
 import { RouteProp } from "@react-navigation/native";
@@ -77,20 +77,22 @@ export default function Map(props: MapComponentProps) {
 
   const filterByName = (input: string) => {
     setNameStation(input);
+    if (input.length === 0) {
+      setDisplayError(false);
+      reinitialisation();
+      return;
+    }
     isTrue = stationState.some((val) =>
-    val.contractName.startsWith(input.toLowerCase())
+      val.contractName.startsWith(input.toLowerCase())
     );
     if (isTrue) {
       const byName = stationState.filter((val) =>
-      val.contractName.startsWith(nameStation.toLowerCase())
+        val.contractName.startsWith(nameStation.toLowerCase())
       );
       setStationState(byName);
     } else {
       setDisplayError(true);
       setStationState(props.station.slice(0, 10));
-    }
-    if(input.length < 0){
-      setDisplayError(false)
     }
   };
 
@@ -293,13 +295,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "100%",
-    marginBottom:10
+    marginBottom: 10,
   },
   capsuleFilterBackground: {
     width: "33%",
     marginRight: 3,
     backgroundColor: "#7158e2",
-    justifyContent:'center'
+    justifyContent: "center",
   },
   capsuleFilterText: {
     color: "white",
