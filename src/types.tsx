@@ -46,6 +46,6 @@ type StationAction = {
 type DispatchType = (args: StationAction) => StationAction;
 
 type RootNavigationParamsList = {
-  MapScreen : undefined;
+  MapScreen : Station;
   InfosScreen: Station; 
 }

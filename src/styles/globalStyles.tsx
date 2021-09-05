@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
   titleApp: {
@@ -39,7 +39,6 @@ export const globalStyles = StyleSheet.create({
   droidSafeArea: {
     flex: 1,
     backgroundColor: "#778ca3",
-    // paddingTop: Platform.OS === 'android' ? 40 : 0
   },
 });
 

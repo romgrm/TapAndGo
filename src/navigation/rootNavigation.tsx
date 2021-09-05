@@ -5,6 +5,9 @@ import MapScreen from "../screens/mapScreen";
 
 const MainStack = createNativeStackNavigator<RootNavigationParamsList>();
 
+/**
+ * Main stack of screens. Allow us to navigate between screens with a typing.
+ */
 export default function rootNavigation() {
   const { Navigator, Screen } = MainStack;
   return (

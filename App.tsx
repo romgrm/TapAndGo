@@ -5,7 +5,7 @@ import store from "./src/store/store";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import RootNavigation from "./src/navigation/rootNavigation";
-import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
+import { SafeAreaView, StatusBar } from "react-native";
 import { globalStyles } from "./src/styles/globalStyles";
 
 export default function App() {

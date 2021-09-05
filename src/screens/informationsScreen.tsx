@@ -8,6 +8,7 @@ import {
   Avatar,
   Badge,
   IconButton,
+  Divider
 } from "react-native-paper";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -57,6 +58,7 @@ export default function InformationsScreen(props: InfosScreenProps) {
           />
           <Subheading style={globalStyles.subTitle}>{address}</Subheading>
         </Card.Content>
+        <Divider style={styles.divider}/>
         <Surface style={styles.surfaceCardContent}>
           <List.Item
             title="vélos mécaniques disponibles"
@@ -140,10 +142,15 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+    marginBottom:10
   },
   addressLogo: {
     marginRight: 10,
     alignSelf: "center",
+  },
+  divider:{
+    width:'50%',
+    alignSelf:'center'
   },
   surfaceCardContent: {
     elevation: 4,

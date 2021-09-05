@@ -3,7 +3,6 @@ import { STATION_LOADING, STATION_SUCCESS, STATION_ERROR } from "./typeStation";
 /**
  * The state will change because of differents actions (it's loading ? success ? error? )
  */
-
 const initialStateStation: StationState = {
   isLoading: false,
   stations: [],
@@ -13,7 +12,6 @@ const initialStateStation: StationState = {
 /**
  * The reducer returns a modified state according to the actions
  */
-
 const stationReducer = (
   state = initialStateStation,
   action: StationAction

@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { Environments } from "../config/environment";
 import { Logger } from "@react-native-mapbox-gl/maps";
 import {
   Chip,
-  Button,
   Text,
   Card,
   TextInput,
   FAB,
   Portal,
-  Provider,
+  Provider
 } from "react-native-paper";
 import StationCallout from "./stationCallout";
 import { RouteProp } from "@react-navigation/native";
@@ -20,6 +19,9 @@ import { Entypo } from "@expo/vector-icons";
 import { globalColor } from "../styles/globalStyles";
 import { MaterialIcons } from "@expo/vector-icons";
 
+/**
+ * MapBox config
+ */
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
 
@@ -76,16 +78,19 @@ export default function Map(props: MapComponentProps) {
   const filterByName = (input: string) => {
     setNameStation(input);
     isTrue = stationState.some((val) =>
-      val.contractName.startsWith(input.toLowerCase())
+    val.contractName.startsWith(input.toLowerCase())
     );
     if (isTrue) {
       const byName = stationState.filter((val) =>
-        val.contractName.startsWith(nameStation.toLowerCase())
+      val.contractName.startsWith(nameStation.toLowerCase())
       );
       setStationState(byName);
     } else {
       setDisplayError(true);
       setStationState(props.station.slice(0, 10));
+    }
+    if(input.length < 0){
+      setDisplayError(false)
     }
   };
 
@@ -119,6 +124,7 @@ export default function Map(props: MapComponentProps) {
   };
 
   const coordinates = [2.213749, 46.227638];
+
   return (
     <>
       <Provider>
@@ -152,7 +158,7 @@ export default function Map(props: MapComponentProps) {
             <Card.Content style={styles.containerCapsuleFilter}>
               {displayCapsuleFilterByStatus ? (
                 <Chip
-                  style={styles.capsuleFilterView}
+                  style={styles.capsuleFilterBackground}
                   textStyle={styles.capsuleFilterText}
                 >
                   Stations ouvertes
@@ -160,7 +166,7 @@ export default function Map(props: MapComponentProps) {
               ) : null}
               {displayCapsuleFilterMechanicalBike ? (
                 <Chip
-                  style={styles.capsuleFilterView}
+                  style={styles.capsuleFilterBackground}
                   textStyle={styles.capsuleFilterText}
                 >
                   Vélos mécaniques
@@ -168,7 +174,7 @@ export default function Map(props: MapComponentProps) {
               ) : null}
               {displayCapsuleFilterByElectricalBike ? (
                 <Chip
-                  style={styles.capsuleFilterView}
+                  style={styles.capsuleFilterBackground}
                   textStyle={styles.capsuleFilterText}
                 >
                   Vélos électriques
@@ -231,8 +237,15 @@ export default function Map(props: MapComponentProps) {
                     onPress: () => filterByMechanicalBikeDispo(),
                   },
                   {
-                    icon: props =><MaterialIcons name="electric-bike" size={24} color='grey' />,
-                    label:"Uniquement les stations avec vélos électriques disponibles",
+                    icon: () => (
+                      <MaterialIcons
+                        name="electric-bike"
+                        size={24}
+                        color="grey"
+                      />
+                    ),
+                    label:
+                      "Uniquement les stations avec vélos électriques disponibles",
                     onPress: () => filterByElectricalBikeDispo(),
                   },
                 ]}
@@ -280,11 +293,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "100%",
+    marginBottom:10
   },
-  capsuleFilterView: {
+  capsuleFilterBackground: {
     width: "33%",
     marginRight: 3,
     backgroundColor: "#7158e2",
+    justifyContent:'center'
   },
   capsuleFilterText: {
     color: "white",

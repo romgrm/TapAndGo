@@ -1,24 +1,27 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import {  MaterialCommunityIcons } from "@expo/vector-icons";
-
-import { RouteProp } from '@react-navigation/native'; 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 interface calloutComponentProps {
-  navigation: NativeStackNavigationProp<RootNavigationParamsList, "MapScreen">
-  route: RouteProp<RootNavigationParamsList, "MapScreen">
+  navigation: NativeStackNavigationProp<RootNavigationParamsList, "MapScreen">;
+  route: RouteProp<RootNavigationParamsList, "MapScreen">;
   title: string;
   station: Station;
 }
 
+/**
+ * Component which display pins on map component
+ * @param props received by navigationType. Undefined because we don't need route.params in this screen
+ */
 export default function stationCallout(props: calloutComponentProps) {
-  const { navigation } = props; 
+  const { navigation } = props;
   const goInfos = (station: Station) => {
-    navigation.navigate("InfosScreen",station)
+    navigation.navigate("InfosScreen", station);
   };
-  
+
   return (
-    <View style={styles.touchableContainer} key={props.station.address}>
+    <View style={styles.touchableContainer}>
       <TouchableOpacity
         onPress={() => goInfos(props.station)}
         style={styles.touchableLogo}

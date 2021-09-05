@@ -10,11 +10,17 @@ interface MapScreenProps {
   navigation: NativeStackNavigationProp<RootNavigationParamsList, "MapScreen">;
   route: RouteProp<RootNavigationParamsList, "MapScreen">;
 }
-
-export default function stationsContainer(props: MapScreenProps) {
+/**
+ * Component which receives the data from the API by redux dispatch
+ * @param props received by navigationType. Undefined because we don't need route.params in this screen 
+ */
+export default function stationContainer(props: MapScreenProps) {
   const stations = useSelector((state: RootState) => state.stations.stations);
   const dispatch = useDispatch();
 
+  /**
+   * Fetch the data from dispatch before mounted component
+   */
   useLayoutEffect(() => {
     dispatch(callApiStation());
   }, [dispatch]);

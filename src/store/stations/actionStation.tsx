@@ -1,10 +1,6 @@
 import * as typeStation from "./typeStation";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { Environments } from "../../config/environment";
-/**
- * Differents actions
- * @returns
- */
 
 const returnApiLoading = () => {
   return {
