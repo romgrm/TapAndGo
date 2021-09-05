@@ -27,9 +27,6 @@ export default function MapScreen(props: MapScreenProps) {
         </Card>
 
         <StationContainer navigation={props.navigation} route={props.route} />
-        {/* <View style={styles.test}>
-        <Text>Hello</Text>
-        </View> */}
       </ScrollView>
     </>
   );
@@ -48,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#7158e2",
-    marginBottom: 20,
+    marginBottom: 10,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
     elevation: 12,

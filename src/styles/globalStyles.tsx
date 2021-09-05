@@ -10,16 +10,31 @@ export const globalStyles = StyleSheet.create({
   },
   title: {
     fontFamily: "Bold",
-    textTransform: "capitalize",
+    fontSize: 25,
+    color:'#7158e2',
+    textTransform: "uppercase",
+    textAlign:'center'
   },
   subTitle: {
     fontFamily: "Medium",
     fontSize: 15,
     textAlign: "center",
-    color: "white"
   },
   text: {
-    fontSize: 20,
+    fontFamily:"Regular",
+    fontSize: 12,
+  },
+  logoInfosBackground:{
+    width:45,
+    height: 45,
+    borderRadius:45/2, 
+    backgroundColor:'#7158e2',
+    alignItems: 'center',
+    justifyContent:'center',
+  },
+  logoInfosText:{
+    color:'white',
+    fontFamily:'Medium'
   },
   droidSafeArea: {
     flex: 1,

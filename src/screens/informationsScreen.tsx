@@ -1,70 +1,162 @@
 import React from "react";
-import { Text, StyleSheet, Image, StatusBar } from "react-native";
-import { Card, Surface } from "react-native-paper";
-import { RouteProp } from '@react-navigation/native'; 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { Text, StyleSheet, Image,  } from "react-native";
+import {
+  Card,
+  Surface,
+  Subheading,
+  List,
+  Avatar,
+  Badge,
+  IconButton,
+} from "react-native-paper";
+import { RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { globalStyles } from "../styles/globalStyles";
+import { AntDesign } from "@expo/vector-icons";
+
 interface InfosScreenProps {
-  navigation: NativeStackNavigationProp<RootNavigationParamsList, "InfosScreen">
-  route: RouteProp<RootNavigationParamsList, "InfosScreen">
+  navigation: NativeStackNavigationProp<
+    RootNavigationParamsList,
+    "InfosScreen"
+  >;
+  route: RouteProp<RootNavigationParamsList, "InfosScreen">;
 }
 
 export default function InformationsScreen(props: InfosScreenProps) {
+  const { contractName, status, address, mainStands } = props.route.params;
 
-  const { contractName, status } = props.route.params; 
   return (
-    <Card>
+    <>
       <Surface style={styles.surfaceCover}>
         <Image
           source={require("../../assets/bike2.png")}
           style={styles.image}
         />
-        {/* <Card.Title title={params.titleStation} titleStyle={globalStyles.title}/> */}
+        <IconButton
+          icon="arrow-left-circle"
+          color="white"
+          size={40}
+          onPress={() => props.navigation.goBack()}
+          style={{position:'absolute', top:40}}
+          />
       </Surface>
-<Text>{contractName}</Text>
-<Text>{status}</Text>
-      {/* <Text>Informations Screen {infosStation.contractName} hello</Text>
-      <Text>Informations Screen {infosStation.address} hello</Text>
-      <Text>
-        Informations Screen{" "}
-        {infosStation.mainStands.availabilities.electricalBikes} hello
-      </Text> */}
-    </Card>
+      <Card style={styles.cardContainer}>
+        <Card.Content style={styles.titleContainer}>
+          <Text style={globalStyles.title}>{contractName}</Text>
+          <Badge
+            size={10}
+            style={status === "OPEN" ? styles.badgeOpen : styles.badgeClose}
+          />
+        </Card.Content>
+        <Card.Content style={styles.addressContainer}>
+          <AntDesign
+            name="home"
+            size={20}
+            color="#7158e2"
+            style={styles.addressLogo}
+          />
+          <Subheading style={globalStyles.subTitle}>{address}</Subheading>
+        </Card.Content>
+        <Surface style={styles.surfaceCardContent}>
+          <List.Item
+            title="vélos mécaniques disponibles"
+            left={() => (
+              <Avatar.Text
+                size={30}
+                labelStyle={globalStyles.logoInfosText}
+                label={`${mainStands.availabilities.mechanicalBikes}`}
+                style={globalStyles.logoInfosBackground}
+              />
+            )}
+            style={styles.listItem}
+          />
+          <List.Item
+            title="vélos électriques disponibles"
+            left={() => (
+              <Avatar.Text
+                size={30}
+                labelStyle={globalStyles.logoInfosText}
+                label={`${mainStands.availabilities.electricalBikes}`}
+                style={globalStyles.logoInfosBackground}
+              />
+            )}
+            style={styles.listItem}
+          />
+          <List.Item
+            title="places libres disponibles"
+            left={() => (
+              <Avatar.Text
+                size={30}
+                labelStyle={globalStyles.logoInfosText}
+                label={`${mainStands.availabilities.stands}`}
+                style={globalStyles.logoInfosBackground}
+              />
+            )}
+            style={styles.listItem}
+          />
+        </Surface>
+      </Card>
+    </>
   );
 }
 const styles = StyleSheet.create({
-  touchableContainer: {
-    width: 60,
-    zIndex: 1,
-  },
-  touchableLogo: {
-    backgroundColor: "#7158e2",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logo: {
-    justifyContent: "center",
-    color: "white",
-  },
-  touchableText: {
-    color: "white",
-    fontWeight: "bold",
-  },
   surfaceCover: {
     width: "100%",
     height: 200,
-    // margin: 50,
     elevation: 4,
-    backgroundColor: "red",
-    // overflow:"hidden"
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   image: {
     width: "100%",
     height: 200,
     resizeMode: "cover",
-    //   marginBottom: 4000
-    // height: 400,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+  },
+  cardContainer: {
+    flex: 1,
+    elevation: 12,
+    marginTop: 10,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 15,
+    marginTop: 10,
+  },
+  badgeOpen: {
+    backgroundColor: "green",
+    alignSelf: "center",
+    marginLeft: 5,
+  },
+  badgeClose: {
+    backgroundColor: "red",
+  },
+  addressContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  addressLogo: {
+    marginRight: 10,
+    alignSelf: "center",
+  },
+  surfaceCardContent: {
+    elevation: 4,
+    margin: 20,
+    borderRadius: 16,
+    padding: 10,
+  },
+  cardContent: {
+    elevation: 12,
+    height: 200,
+    width: 100,
+  },
+  listItem: {
+    marginBottom: 15,
   },
 });

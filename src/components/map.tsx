@@ -18,6 +18,7 @@ import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Entypo } from "@expo/vector-icons";
 import { globalColor } from "../styles/globalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
 
 MapboxGL.setAccessToken(Environments.development.MAP_TOKEN);
 MapboxGL.setConnected(true);
@@ -97,7 +98,7 @@ export default function Map(props: MapComponentProps) {
   const filterByMechanicalBikeDispo = () => {
     setDisplayCapsuleFilterByMechanicalBike(true);
     const byMechanicalBikeDispo = stationState.filter(
-      (val) => val.mainStands.availabilities.bikes > 0
+      (val) => val.mainStands.availabilities.mechanicalBikes > 0
     );
     setStationState(byMechanicalBikeDispo);
   };
@@ -150,13 +151,28 @@ export default function Map(props: MapComponentProps) {
           <Card.Content style={styles.containerMap}>
             <Card.Content style={styles.containerCapsuleFilter}>
               {displayCapsuleFilterByStatus ? (
-                <Chip style={styles.capsuleFilterView} textStyle={styles.capsuleFilterText}>Stations ouvertes</Chip>
+                <Chip
+                  style={styles.capsuleFilterView}
+                  textStyle={styles.capsuleFilterText}
+                >
+                  Stations ouvertes
+                </Chip>
               ) : null}
               {displayCapsuleFilterMechanicalBike ? (
-                <Chip style={styles.capsuleFilterView} textStyle={styles.capsuleFilterText}>Vélos mécaniques</Chip>
+                <Chip
+                  style={styles.capsuleFilterView}
+                  textStyle={styles.capsuleFilterText}
+                >
+                  Vélos mécaniques
+                </Chip>
               ) : null}
               {displayCapsuleFilterByElectricalBike ? (
-                <Chip style={styles.capsuleFilterView} textStyle={styles.capsuleFilterText}>Vélos électriques</Chip>
+                <Chip
+                  style={styles.capsuleFilterView}
+                  textStyle={styles.capsuleFilterText}
+                >
+                  Vélos électriques
+                </Chip>
               ) : null}
             </Card.Content>
             {displayMap ? (
@@ -215,9 +231,8 @@ export default function Map(props: MapComponentProps) {
                     onPress: () => filterByMechanicalBikeDispo(),
                   },
                   {
-                    icon: "flash",
-                    label:
-                      "Uniquement les stations avec vélos électriques disponibles",
+                    icon: props =><MaterialIcons name="electric-bike" size={24} color='grey' />,
+                    label:"Uniquement les stations avec vélos électriques disponibles",
                     onPress: () => filterByElectricalBikeDispo(),
                   },
                 ]}
@@ -234,7 +249,6 @@ export default function Map(props: MapComponentProps) {
 
 const styles = StyleSheet.create({
   containerGlobal: {
-    padding: 0,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     borderBottomLeftRadius: 16,
@@ -262,19 +276,19 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginBottom: 50,
   },
-  containerCapsuleFilter:{
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%', 
+  containerCapsuleFilter: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
   },
-  capsuleFilterView:{
-    width: "33%", 
+  capsuleFilterView: {
+    width: "33%",
     marginRight: 3,
-    backgroundColor:'#7158e2',
+    backgroundColor: "#7158e2",
   },
-  capsuleFilterText:{
-    color:'white',
-    fontSize:10
+  capsuleFilterText: {
+    color: "white",
+    fontSize: 10,
   },
   map: {
     elevation: 12,
