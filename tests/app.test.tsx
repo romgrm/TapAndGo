@@ -1,11 +1,11 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import store from "../src/store/store";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import configureStore from "redux-mock-store";
 import { render, cleanup, fireEvent } from "@testing-library/react-native";
 import App from "../App";
-import RootNavigation from '../src/navigation/rootNavigation'
+import RootNavigation from "../src/navigation/rootNavigation";
 import "react-native-gesture-handler/jestSetup";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -30,23 +30,38 @@ jest.mock("react-native/Libraries/Animated/src/NativeAnimatedHelper");
 //     ),
 //     SafeAreaView: ({ children }:any) => <>{children}</>,
 //   }));
-
 describe("<App />", () => {
   // configureStore expects a list of middlewares
+  const initialState = {
+    isLoading: false,
+    station: [
+      {
+        station: "nantes",
+      },
+      {
+        station: "rennes",
+      },
+    ],
+    error: "error",
+  };
   const mockStore = configureStore([]);
-
-  it("should render", () => {
-    const storeMock = mockStore(store);
-    const {getByTestId} = render(
-      <Provider store={storeMock}>
-        <NavigationContainer>
-          <RootNavigation />
-        </NavigationContainer>
-      </Provider>
-    );
-    // const textComponent = rendered.getByTestId('text');
-    const tree = getByTestId('test')
-    expect(tree?.props.children).toBe(3);
+  it("should render", async () => {
+    const storeMock = mockStore({ station: ["fake", "fake2"] });
+    // const apppTest = render(
+    //   <Provider store={storeMock}>
+    //     <NavigationContainer>
+    //       <RootNavigation />
+    //     </NavigationContainer>
+    //   </Provider>
+    // );
+    // const tree = getByTestId('test')
+    await expect(
+      renderer.create(
+        <Provider store={storeMock}>
+          <App />
+        </Provider>
+      )
+    ).toMatchSnapshot();
   });
 
   // it('should dispatch increment action', () => {

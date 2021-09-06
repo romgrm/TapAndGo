@@ -16,14 +16,15 @@ interface calloutComponentProps {
  */
 export default function stationCallout(props: calloutComponentProps) {
   const { navigation } = props;
-  const goInfos = (station: Station) => {
+  
+  const goInfosScreen = (station: Station) => {
     navigation.navigate("InfosScreen", station);
   };
 
   return (
     <View style={styles.touchableContainer}>
       <TouchableOpacity
-        onPress={() => goInfos(props.station)}
+        onPress={() => goInfosScreen(props.station)}
         style={styles.touchableLogo}
       >
         <MaterialCommunityIcons

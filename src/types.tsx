@@ -1,3 +1,6 @@
+/**
+ * Typing of station data received
+ */
 interface Station {
   number: number;
   contractName: string;
@@ -32,12 +35,18 @@ interface Station {
   };
 }
 
+/**
+ * Typing of global state
+ */
 type StationState = {
   isLoading: boolean;
   stations: Station[];
   error: string;
 };
 
+/**
+ * Typing of action for global state
+ */
 type StationAction = {
   type: string;
   payload?: Station | Error;
@@ -45,7 +54,10 @@ type StationAction = {
 
 type DispatchType = (args: StationAction) => StationAction;
 
+/**
+ * Typing for our screens with react-navigation route params
+ */
 type RootNavigationParamsList = {
-  MapScreen : Station;
-  InfosScreen: Station; 
-}
+  MapScreen: Station;
+  InfosScreen: Station;
+};
